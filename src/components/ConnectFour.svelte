@@ -1,17 +1,23 @@
 <script lang="ts">
-
   // * Constants
   type Piece = '🔴' | '⚫' | '___'
   const BLANK = '___'
   const BOARD_WIDTH = 7
   const BOARD_HEIGHT = 6
   const emptyRow = () => new Array<Piece>(BOARD_WIDTH).fill(BLANK)
-  
+
   // * Game State
   let board = new Array<Array<Piece>>(BOARD_HEIGHT).fill(emptyRow())
   let userTurn = true
   let gameOver = false
   let userWon = false
+
+  const reset = (): void => {
+    board = new Array<Array<Piece>>(BOARD_HEIGHT).fill(emptyRow())
+    userTurn = true
+    gameOver = false
+    userWon = false
+  }
 
   const handleDropPiece = (piece: Piece, column: number): void => {
     dropPiece(piece, column)
@@ -40,18 +46,18 @@
 
   const checkGameOver = () => {
     if (isGameOver()) {
-      gameOver = true;
-      userWon = !userTurn;
+      gameOver = true
+      userWon = !userTurn
     }
   }
 
-  const isGameOver = () : boolean => {
-    return false;
+  const isGameOver = (): boolean => {
+    return false
   }
 
-  const computerTurn = () : void => {
+  const computerTurn = (): void => {
     // * Random strat
-    let randCol = Math.floor(Math.random() * Math.floor(BOARD_WIDTH));
+    let randCol = Math.floor(Math.random() * Math.floor(BOARD_WIDTH))
     dropPiece('⚫', randCol)
     userTurn = true
   }
@@ -61,7 +67,7 @@
   .centered {
     margin: auto;
     width: 50%;
-    border: 3px solid lightblue;
+    /* border: 3px solid lightblue; */
     padding: 10px;
   }
 
@@ -69,15 +75,23 @@
     padding: 12px;
   }
   button {
-    margin: 5px;
+    margin: 12px;
   }
 </style>
 
 <div class="centered">
 
-  <h3>{gameOver ? userWon ? "You won!" : "You lost!" : ""}</h3>
+  <h3>{gameOver ? (userWon ? 'You won!' : 'You lost!') : ''}</h3>
+  <button on:click={reset}>Reset</button>
 
-  <table>
+  <table class="centered">
+    <tr>
+      {#each emptyRow() as item, i}
+        <button on:click={() => handleDropPiece('🔴', i)} disabled={!userTurn}>🌟</button>
+      {/each}
+    </tr>
+  </table>
+  <table class="centered">
     {#each board as row}
       <tr>
         {#each row as piece}
@@ -85,12 +99,5 @@
         {/each}
       </tr>
     {/each}
-  </table>
-  <table>
-    <tr>
-      {#each emptyRow() as item, i}
-        <button on:click={() => handleDropPiece('🔴', i)} disabled={!userTurn}>✅</button>
-      {/each}
-    </tr>
   </table>
 </div>
