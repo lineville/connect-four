@@ -1,7 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte'
   import Navbar from './components/Navbar.svelte'
-  // * Import any other components needed here
+  import ConnectFour from './components/ConnectFour.svelte'
 
   onMount(() => {
     console.log('App mounted')
@@ -24,6 +24,6 @@
 
 <main>
   <Navbar />
-  <h1>Svelte TypeScript BoilerPlate!</h1>
-  <h3>Start building your app by adding to src/App.svelte</h3>
+  <h1>Connect Four</h1>
+  <ConnectFour />
 </main>
