@@ -1,10 +1,13 @@
 <script lang="ts">
   // * Constants
-  type Piece = '🔴' | '⚫' | '___'
-  const BLANK = '___'
+  enum Piece {
+    Red = '🔴',
+    Black = '⚫',
+    Empty = '___',
+  }
   const BOARD_WIDTH = 7
   const BOARD_HEIGHT = 6
-  const emptyRow = () => new Array<Piece>(BOARD_WIDTH).fill(BLANK)
+  const emptyRow = () => new Array<Piece>(BOARD_WIDTH).fill(Piece.Empty)
 
   // * Game State
   let board = new Array<Array<Piece>>(BOARD_HEIGHT).fill(emptyRow())
@@ -12,6 +15,7 @@
   let gameOver = false
   let userWon = false
 
+  // * Resets the game state
   const reset = (): void => {
     board = new Array<Array<Piece>>(BOARD_HEIGHT).fill(emptyRow())
     userTurn = true
@@ -19,6 +23,7 @@
     userWon = false
   }
 
+  // * Handles the user selecting a column to drop piece
   const handleDropPiece = (piece: Piece, column: number): void => {
     dropPiece(piece, column)
     checkGameOver()
@@ -29,9 +34,9 @@
   // * Drops the given piece at the selected column if possible
   const dropPiece = (piece: Piece, column: number): void => {
     let currentRow = 0
-    if (board[currentRow][column] !== BLANK) return // Column is full
+    if (board[currentRow][column] !== Piece.Empty) return // Column is full
 
-    while (currentRow < BOARD_HEIGHT && board[currentRow][column] === BLANK) {
+    while (currentRow < BOARD_HEIGHT && board[currentRow][column] === Piece.Empty) {
       currentRow++
     }
 
@@ -44,6 +49,7 @@
     userTurn = false
   }
 
+  // * Checks if game has ended and sets appropriate flags
   const checkGameOver = () => {
     if (isGameOver()) {
       gameOver = true
@@ -51,14 +57,15 @@
     }
   }
 
+  // * Checks if there exists a four-streak horizontal, vertical or diagonal
   const isGameOver = (): boolean => {
     return false
   }
 
+  // * Choses which column to place black piece on board
   const computerTurn = (): void => {
-    // * Random strat
     let randCol = Math.floor(Math.random() * Math.floor(BOARD_WIDTH))
-    dropPiece('⚫', randCol)
+    dropPiece(Piece.Black, randCol)
     userTurn = true
   }
 </script>
@@ -67,7 +74,6 @@
   .centered {
     margin: auto;
     width: 50%;
-    /* border: 3px solid lightblue; */
     padding: 10px;
   }
 
@@ -82,15 +88,17 @@
 <div class="centered">
 
   <h3>{gameOver ? (userWon ? 'You won!' : 'You lost!') : ''}</h3>
+
   <button on:click={reset}>Reset</button>
 
   <table class="centered">
     <tr>
       {#each emptyRow() as item, i}
-        <button on:click={() => handleDropPiece('🔴', i)} disabled={!userTurn}>🌟</button>
+        <button on:click={() => handleDropPiece(Piece.Red, i)} disabled={!userTurn}>🌟</button>
       {/each}
     </tr>
   </table>
+
   <table class="centered">
     {#each board as row}
       <tr>
